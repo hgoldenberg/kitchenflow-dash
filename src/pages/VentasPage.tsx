@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { useDemoContext } from "@/context/DemoContext";
+import { useDemoGuide } from "@/context/DemoGuideContext";
 import { productos } from "@/data/mockData";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, Minus, Plus, Zap } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Zap, ArrowRight } from "lucide-react";
+import StepIndicator from "@/components/StepIndicator";
 import type { VentaItem } from "@/data/mockData";
 
 export default function VentasPage() {
   const { registrarVenta, ingredientes } = useDemoContext();
+  const { isGuided, currentStep, nextStep } = useDemoGuide();
   const [carrito, setCarrito] = useState<Record<string, number>>({});
   const [ventaRegistrada, setVentaRegistrada] = useState(false);
 
@@ -55,19 +58,19 @@ export default function VentasPage() {
     prod.receta.forEach((r) => {
       const ing = ingredientes.find((i) => i.id === r.ingredienteId);
       if (!ing) return;
-      const existing = consumoPreview.find((c) => c.nombre === ing.nombre);
       const consumo = r.cantidad * qty;
+      const existing = consumoPreview.find((c) => c.nombre === ing.nombre);
       if (existing) {
         existing.cantidad += consumo;
-        existing.stockDespues -= consumo;
+        existing.stockDespues = parseFloat((existing.stockDespues - consumo).toFixed(2));
         existing.critico = existing.stockDespues <= ing.stockMinimo;
       } else {
-        const stockDespues = ing.stockActual - consumo;
+        const stockDespues = parseFloat((ing.stockActual - consumo).toFixed(2));
         consumoPreview.push({
           nombre: ing.nombre,
-          cantidad: consumo,
+          cantidad: parseFloat(consumo.toFixed(2)),
           unidad: ing.unidad,
-          stockDespues: parseFloat(stockDespues.toFixed(2)),
+          stockDespues,
           critico: stockDespues <= ing.stockMinimo,
         });
       }
@@ -76,14 +79,18 @@ export default function VentasPage() {
 
   return (
     <div className="space-y-6">
+      <StepIndicator />
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-2xl font-bold">Venta / Caja</h1>
-          <p className="text-muted-foreground text-sm mt-1">Registrar ventas y ver el impacto en stock por receta</p>
+          <p className="text-muted-foreground text-sm mt-1">
+            Simulá las ventas de un turno completo y observá el impacto automático en stock por receta.
+          </p>
         </div>
         <Button variant="outline" size="sm" onClick={cargarVentaDemo} className="gap-2">
           <Zap className="h-3.5 w-3.5" />
-          Cargar venta demo
+          Simular ventas del turno
         </Button>
       </div>
 
@@ -122,12 +129,12 @@ export default function VentasPage() {
             <CardHeader className="pb-2">
               <CardTitle className="text-base flex items-center gap-2">
                 <ShoppingCart className="h-4 w-4" />
-                Ticket
+                Ventas acumuladas del turno
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {Object.entries(carrito).length === 0 ? (
-                <p className="text-sm text-muted-foreground">Carrito vacío</p>
+                <p className="text-sm text-muted-foreground">Sin productos cargados. Usá "Simular ventas del turno" para cargar un ejemplo.</p>
               ) : (
                 <>
                   {Object.entries(carrito).map(([id, qty]) => {
@@ -140,16 +147,23 @@ export default function VentasPage() {
                     );
                   })}
                   <div className="border-t pt-2 flex justify-between font-bold">
-                    <span>Total</span>
+                    <span>Total del turno</span>
                     <span>${total.toLocaleString("es-AR")}</span>
                   </div>
                 </>
               )}
               <Button className="w-full mt-2" onClick={handleRegistrarVenta} disabled={Object.entries(carrito).length === 0}>
-                Registrar venta
+                Confirmar venta y actualizar stock
               </Button>
               {ventaRegistrada && (
-                <p className="text-xs text-success font-medium text-center">✓ Venta registrada — stock actualizado automáticamente</p>
+                <div className="space-y-2">
+                  <p className="text-xs text-success font-medium text-center">✓ Venta registrada — stock actualizado automáticamente</p>
+                  {isGuided && currentStep === 1 && (
+                    <Button variant="outline" size="sm" className="w-full gap-2" onClick={nextStep}>
+                      Siguiente: revisar stock <ArrowRight className="h-3 w-3" />
+                    </Button>
+                  )}
+                </div>
               )}
             </CardContent>
           </Card>
@@ -161,12 +175,12 @@ export default function VentasPage() {
               </CardHeader>
               <CardContent className="space-y-1.5">
                 {consumoPreview.map((c) => (
-                  <div key={c.nombre} className="flex items-center justify-between text-xs">
-                    <span>{c.nombre}</span>
+                  <div key={c.nombre} className={`flex items-center justify-between text-xs rounded-md px-2 py-1.5 ${c.critico ? "bg-destructive/10" : ""}`}>
+                    <span className={c.critico ? "font-semibold text-destructive" : ""}>{c.nombre}</span>
                     <div className="flex items-center gap-2">
                       <span>-{c.cantidad.toFixed(2)} {c.unidad}</span>
                       <Badge variant={c.critico ? "destructive" : "secondary"} className="text-[10px]">
-                        {c.critico ? "⚠ Crítico" : `Queda: ${c.stockDespues} ${c.unidad}`}
+                        {c.critico ? `⚠ Crítico: queda ${c.stockDespues} ${c.unidad}` : `Queda: ${c.stockDespues} ${c.unidad}`}
                       </Badge>
                     </div>
                   </div>

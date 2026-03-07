@@ -1,10 +1,20 @@
 import { useDemoContext } from "@/context/DemoContext";
+import { useDemoGuide } from "@/context/DemoGuideContext";
+import { proveedores } from "@/data/mockData";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, CheckCircle2, Package } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle, CheckCircle2, Package, ShoppingCart, ArrowRight } from "lucide-react";
+import StepIndicator from "@/components/StepIndicator";
+import { useNavigate } from "react-router-dom";
 
 export default function StockPage() {
-  const { ingredientes, alertas } = useDemoContext();
+  const { ingredientes, alertas, generarOrdenCompra, ordenesCompra } = useDemoContext();
+  const { isGuided, currentStep, nextStep } = useDemoGuide();
+  const navigate = useNavigate();
+
+  const ingredientesCriticos = ingredientes.filter((i) => i.stockActual <= i.stockMinimo);
+  const yaConOrden = new Set(ordenesCompra.flatMap((o) => o.items.map((i) => i.ingredienteId)));
 
   const getEstado = (ing: typeof ingredientes[0]) => {
     if (ing.stockActual <= 0) return { label: "Sin stock", variant: "destructive" as const };
@@ -13,13 +23,37 @@ export default function StockPage() {
     return { label: "OK", variant: "secondary" as const };
   };
 
+  const handleGenerarOrdenes = () => {
+    ingredientesCriticos.forEach((ing) => {
+      if (!yaConOrden.has(ing.id)) {
+        const cantidad = Math.max(10, ing.stockMinimo * 5);
+        generarOrdenCompra(ing.id, cantidad, proveedores[0].id);
+      }
+    });
+    if (isGuided && currentStep === 2) {
+      nextStep();
+    } else {
+      navigate("/compras");
+    }
+  };
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-bold">Stock y Alertas</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Estado de ingredientes en tiempo real. Los consumos se descuentan automáticamente al registrar ventas.
-        </p>
+      <StepIndicator />
+
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-2xl font-bold">Stock y Alertas</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Estado de ingredientes en tiempo real. Los consumos se descuentan automáticamente al registrar ventas.
+          </p>
+        </div>
+        {ingredientesCriticos.length > 0 && (
+          <Button className="gap-2" onClick={handleGenerarOrdenes} disabled={ingredientesCriticos.every((i) => yaConOrden.has(i.id))}>
+            <ShoppingCart className="h-4 w-4" />
+            {ingredientesCriticos.every((i) => yaConOrden.has(i.id)) ? "Órdenes generadas" : "Generar orden de compra sugerida"}
+          </Button>
+        )}
       </div>
 
       {alertas.length > 0 && (
@@ -58,7 +92,7 @@ export default function StockPage() {
                     {ing.nombre}
                   </td>
                   <td className={`px-4 py-3 text-right font-semibold ${isCritico ? "text-destructive" : ""}`}>
-                    {ing.stockActual} {ing.unidad}
+                    {Number(ing.stockActual.toFixed(2))} {ing.unidad}
                   </td>
                   <td className="px-4 py-3 text-right text-muted-foreground">{ing.stockMinimo} {ing.unidad}</td>
                   <td className="px-4 py-3 text-right text-muted-foreground">${ing.costoUnitario.toLocaleString("es-AR")}</td>

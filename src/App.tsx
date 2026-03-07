@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { DemoProvider } from "@/context/DemoContext";
+import { DemoGuideProvider } from "@/context/DemoGuideContext";
 import AppLayout from "@/components/AppLayout";
 import DashboardPage from "@/pages/DashboardPage";
 import VentasPage from "@/pages/VentasPage";
@@ -22,17 +23,19 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <DemoProvider>
-          <AppLayout>
-            <Routes>
-              <Route path="/" element={<DashboardPage />} />
-              <Route path="/ventas" element={<VentasPage />} />
-              <Route path="/stock" element={<StockPage />} />
-              <Route path="/compras" element={<ComprasPage />} />
-              <Route path="/facturas" element={<FacturasPage />} />
-              <Route path="/presentacion" element={<PresentacionPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AppLayout>
+          <DemoGuideProvider>
+            <AppLayout>
+              <Routes>
+                <Route path="/" element={<DashboardPage />} />
+                <Route path="/ventas" element={<VentasPage />} />
+                <Route path="/stock" element={<StockPage />} />
+                <Route path="/compras" element={<ComprasPage />} />
+                <Route path="/facturas" element={<FacturasPage />} />
+                <Route path="/presentacion" element={<PresentacionPage />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AppLayout>
+          </DemoGuideProvider>
         </DemoProvider>
       </BrowserRouter>
     </TooltipProvider>
