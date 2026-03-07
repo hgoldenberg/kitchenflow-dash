@@ -198,7 +198,7 @@ export default function PresentacionPage() {
       <Section title="Próximos pasos" accent>
         <div className="grid gap-3 md:grid-cols-2">
           {[
-            "Validar la propuesta con el primer cliente",
+            "Validar la propuesta con el Cliente",
             "Definir prioridades y ajustes sobre esta demo",
             "Construir MVP operativo con datos reales",
             "Piloto en un local durante 30 días",
