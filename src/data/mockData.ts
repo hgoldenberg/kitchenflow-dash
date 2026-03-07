@@ -88,7 +88,7 @@ export const productos: Producto[] = [
   },
   {
     id: "empanada_jyq",
-    nombre: "Empanada JyQ",
+    nombre: "Empanada Jamón y queso",
     precio: 1200,
     categoria: "Empanadas",
     receta: [
