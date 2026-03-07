@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import { LayoutDashboard, ShoppingCart, Package, Truck, FileText, RotateCcw, Presentation } from "lucide-react";
 import { useDemoContext } from "@/context/DemoContext";
