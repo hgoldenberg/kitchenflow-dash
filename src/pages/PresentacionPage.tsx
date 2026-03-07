@@ -28,7 +28,7 @@ const modulos = [
 ];
 
 const roadmap = [
-  { etapa: "Validación", desc: "Demo visual + reunión con primer cliente", estado: "actual" },
+  { etapa: "Validación", desc: "Demo visual + reunión con el Cliente", estado: "actual" },
   { etapa: "MVP Operativo", desc: "Base de datos real, autenticación, CRUD completo", estado: "próximo" },
   { etapa: "Consolidación", desc: "Reportes, múltiples usuarios, backup automático", estado: "futuro" },
   { etapa: "Expansión", desc: "Multi-sucursal, delivery, integraciones fiscales", estado: "futuro" },
