@@ -23,7 +23,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter basename="/kitchenflow-dash">
+      <BrowserRouter basename={import.meta.env.DEV ? "/" : "/kitchenflow-dash"}>
         <DemoProvider>
           <DemoGuideProvider>
             <AppLayout>
