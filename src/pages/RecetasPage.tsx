@@ -1,62 +1,55 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChefHat, Package, DollarSign, TrendingUp } from "lucide-react";
+import { productos, ingredientesIniciales } from "@/data/mockData";
 
-interface RecetaIngrediente {
-  nombre: string;
-  cantidad: number;
-  unidad: string;
-  costoUnitario: number;
-}
-
-interface Receta {
+interface RecetaDisplay {
   id: string;
   nombre: string;
   tipo: "con_receta" | "sin_receta";
   rendimiento: string;
-  ingredientes: RecetaIngrediente[];
+  ingredientes: { nombre: string; cantidad: number; unidad: string; costoUnitario: number }[];
   precioVenta: number;
 }
 
-const recetasDummy: Receta[] = [
-  {
-    id: "pizza_muzz",
-    nombre: "Pizza Muzzarella",
+// Build display data from the actual mockData source of truth
+const recetasDisplay: RecetaDisplay[] = productos.map((prod) => {
+  const tieneReceta = prod.receta.length > 0 && !(prod.receta.length === 1 && prod.receta[0].ingredienteId === prod.id.replace("_500", ""));
+  const esStockDirecto = prod.receta.length === 1 && prod.receta[0].ingredienteId === "gaseosa";
+
+  if (esStockDirecto) {
+    return {
+      id: prod.id,
+      nombre: prod.nombre,
+      tipo: "sin_receta",
+      rendimiento: "1 unidad",
+      ingredientes: [],
+      precioVenta: prod.precio,
+    };
+  }
+
+  return {
+    id: prod.id,
+    nombre: prod.nombre,
     tipo: "con_receta",
     rendimiento: "1 unidad",
-    ingredientes: [
-      { nombre: "Harina 000", cantidad: 0.318, unidad: "kg", costoUnitario: 450 },
-      { nombre: "Salsa de tomate", cantidad: 0.200, unidad: "kg", costoUnitario: 600 },
-      { nombre: "Muzzarella", cantidad: 0.400, unidad: "kg", costoUnitario: 1800 },
-    ],
-    precioVenta: 4500,
-  },
-  {
-    id: "empanada_jyq",
-    nombre: "Empanada Jamón y queso",
-    tipo: "con_receta",
-    rendimiento: "1 unidad",
-    ingredientes: [
-      { nombre: "Masa / tapa", cantidad: 1, unidad: "un", costoUnitario: 80 },
-      { nombre: "Jamón cocido", cantidad: 0.050, unidad: "kg", costoUnitario: 3200 },
-      { nombre: "Queso cremoso", cantidad: 0.040, unidad: "kg", costoUnitario: 2400 },
-    ],
-    precioVenta: 1200,
-  },
-  {
-    id: "gaseosa_500",
-    nombre: "Gaseosa 500 ml",
-    tipo: "sin_receta",
-    rendimiento: "1 unidad",
-    ingredientes: [],
-    precioVenta: 900,
-  },
-];
+    ingredientes: prod.receta.map((r) => {
+      const ing = ingredientesIniciales.find((i) => i.id === r.ingredienteId);
+      return {
+        nombre: ing?.nombre || r.ingredienteId,
+        cantidad: r.cantidad,
+        unidad: ing?.unidad || "kg",
+        costoUnitario: ing?.costoUnitario || 0,
+      };
+    }),
+    precioVenta: prod.precio,
+  };
+});
 
-// Costo directo para gaseosa (control por stock directo)
-const costoGaseosa = 350;
+// Cost for stock-direct products
+const costoGaseosa = ingredientesIniciales.find((i) => i.id === "gaseosa")?.costoUnitario || 350;
 
-function calcularCostoReceta(receta: Receta): number {
+function calcularCostoReceta(receta: RecetaDisplay): number {
   if (receta.tipo === "sin_receta") return costoGaseosa;
   return receta.ingredientes.reduce((sum, ing) => sum + ing.cantidad * ing.costoUnitario, 0);
 }
@@ -85,7 +78,7 @@ export default function RecetasPage() {
       </Card>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {recetasDummy.map((receta) => {
+        {recetasDisplay.map((receta) => {
           const costoTotal = calcularCostoReceta(receta);
           const margen = calcularMargen(receta.precioVenta, costoTotal);
           
@@ -108,7 +101,6 @@ export default function RecetasPage() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Ingredientes */}
                 {receta.tipo === "con_receta" ? (
                   <div className="space-y-1.5">
                     <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
@@ -130,7 +122,6 @@ export default function RecetasPage() {
                   </div>
                 )}
 
-                {/* Costeo */}
                 <div className="border-t pt-3 space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="flex items-center gap-1.5 text-muted-foreground">

@@ -4,11 +4,11 @@ import { proveedores } from "@/data/mockData";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Truck, PackageCheck, ShoppingCart, FileText, ArrowRight } from "lucide-react";
+import { Truck, PackageCheck, ShoppingCart, FileText } from "lucide-react";
 import StepIndicator from "@/components/StepIndicator";
 
 export default function ComprasPage() {
-  const { ingredientes, alertas, ordenesCompra, generarOrdenCompra, recibirMercaderia, registrarFactura } = useDemoContext();
+  const { ingredientes, alertas, ordenesCompra, generarOrdenCompra, recibirMercaderia, registrarFactura, facturas } = useDemoContext();
   const { isGuided, currentStep, nextStep } = useDemoGuide();
 
   const ingredientesCriticos = ingredientes.filter((i) => alertas.includes(i.id));
@@ -32,12 +32,8 @@ export default function ComprasPage() {
     }
   };
 
-  // Determine flow state for each order
-  const getOrderFlowState = (orden: typeof ordenesCompra[0]) => {
-    const tieneFactura = false; // simplified for demo
-    if (orden.estado === "emitida") return "emitida";
-    return "recibida";
-  };
+  // Check if a factura already exists for an order
+  const tieneFactura = (ordenId: string) => facturas.some((f) => f.ordenCompraId === ordenId);
 
   return (
     <div className="space-y-6">
@@ -114,6 +110,7 @@ export default function ComprasPage() {
                     const prov = proveedores.find((p) => p.id === orden.proveedorId);
                     const item = orden.items[0];
                     const ing = ingredientes.find((i) => i.id === item.ingredienteId);
+                    const facturaRegistrada = tieneFactura(orden.id);
                     return (
                       <tr key={orden.id} className="border-t">
                         <td className="px-4 py-3 font-mono text-xs">{orden.id}</td>
@@ -128,16 +125,19 @@ export default function ComprasPage() {
                         </td>
                         <td className="px-4 py-3 text-center">
                           {orden.estado === "emitida" && (
-                            <Button size="sm" variant="outline" className="gap-1 text-xs" onClick={() => handleRecibir(orden.id)}>
+                            <Button size="sm" className="gap-1 text-xs" onClick={() => handleRecibir(orden.id)}>
                               <PackageCheck className="h-3 w-3" />
                               Registrar recepción
                             </Button>
                           )}
-                          {orden.estado === "recibida" && (
-                            <Button size="sm" variant="outline" className="gap-1 text-xs" onClick={() => handleRegistrarFactura(orden.id)}>
+                          {orden.estado === "recibida" && !facturaRegistrada && (
+                            <Button size="sm" className="gap-1 text-xs" onClick={() => handleRegistrarFactura(orden.id)}>
                               <FileText className="h-3 w-3" />
                               Registrar factura proveedor
                             </Button>
+                          )}
+                          {orden.estado === "recibida" && facturaRegistrada && (
+                            <Badge variant="secondary" className="text-xs">✓ Factura registrada</Badge>
                           )}
                         </td>
                       </tr>

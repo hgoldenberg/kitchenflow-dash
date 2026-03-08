@@ -11,6 +11,7 @@ interface DemoState {
   ordenesCompra: OrdenCompra[];
   facturas: Factura[];
   alertas: string[];
+  demoVersion: number;
 }
 
 interface DemoContextType extends DemoState {
@@ -35,19 +36,20 @@ function calcularAlertas(ingredientes: Ingrediente[]): string[] {
     .map((i) => i.id);
 }
 
-function getInitialState(): DemoState {
+function getInitialState(version: number = 0): DemoState {
   const ingredientes = ingredientesIniciales.map((i) => ({ ...i }));
   return {
     ingredientes,
-    ventas: [...ventasIniciales],
-    ordenesCompra: [...ordenesCompraIniciales],
-    facturas: [...facturasIniciales],
+    ventas: ventasIniciales.map((v) => ({ ...v, items: v.items.map((i) => ({ ...i })) })),
+    ordenesCompra: ordenesCompraIniciales.map((o) => ({ ...o, items: o.items.map((i) => ({ ...i })) })),
+    facturas: facturasIniciales.map((f) => ({ ...f })),
     alertas: calcularAlertas(ingredientes),
+    demoVersion: version,
   };
 }
 
 export function DemoProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<DemoState>(getInitialState);
+  const [state, setState] = useState<DemoState>(() => getInitialState(0));
 
   const registrarVenta = useCallback((items: VentaItem[]) => {
     setState((prev) => {
@@ -86,6 +88,9 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     setState((prev) => {
       const ing = prev.ingredientes.find((i) => i.id === ingredienteId);
       if (!ing) return prev;
+      // Prevent duplicate orders for same ingredient
+      const yaExiste = prev.ordenesCompra.some((o) => o.items.some((i) => i.ingredienteId === ingredienteId));
+      if (yaExiste) return prev;
       ordenId = `oc${String(prev.ordenesCompra.length + 1).padStart(3, "0")}`;
       const orden: OrdenCompra = {
         id: ordenId,
@@ -102,12 +107,13 @@ export function DemoProvider({ children }: { children: ReactNode }) {
 
   const recibirMercaderia = useCallback((ordenId: string) => {
     setState((prev) => {
+      const orden = prev.ordenesCompra.find((o) => o.id === ordenId);
+      if (!orden || orden.estado === "recibida") return prev;
+
       const ordenes = prev.ordenesCompra.map((o) => {
         if (o.id !== ordenId) return o;
         return { ...o, estado: "recibida" as const };
       });
-      const orden = ordenes.find((o) => o.id === ordenId);
-      if (!orden) return prev;
 
       const nuevosIngredientes = prev.ingredientes.map((ing) => {
         const item = orden.items.find((i) => i.ingredienteId === ing.id);
@@ -148,7 +154,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const resetDemo = useCallback(() => {
-    setState(getInitialState());
+    setState((prev) => getInitialState(prev.demoVersion + 1));
   }, []);
 
   return (

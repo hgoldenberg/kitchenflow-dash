@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDemoContext } from "@/context/DemoContext";
 import { useDemoGuide } from "@/context/DemoGuideContext";
 import { productos } from "@/data/mockData";
@@ -10,10 +10,16 @@ import StepIndicator from "@/components/StepIndicator";
 import type { VentaItem } from "@/data/mockData";
 
 export default function VentasPage() {
-  const { registrarVenta, ingredientes } = useDemoContext();
+  const { registrarVenta, ingredientes, demoVersion } = useDemoContext();
   const { isGuided, currentStep, nextStep } = useDemoGuide();
   const [carrito, setCarrito] = useState<Record<string, number>>({});
   const [ventaRegistrada, setVentaRegistrada] = useState(false);
+
+  // Reset local state when demo is reset
+  useEffect(() => {
+    setCarrito({});
+    setVentaRegistrada(false);
+  }, [demoVersion]);
 
   const agregarAlCarrito = (productoId: string) => {
     setCarrito((prev) => ({ ...prev, [productoId]: (prev[productoId] || 0) + 1 }));
@@ -88,7 +94,7 @@ export default function VentasPage() {
             Simulá las ventas de un turno completo y observá el impacto automático en stock por receta.
           </p>
         </div>
-        <Button variant="outline" size="sm" onClick={cargarVentaDemo} className="gap-2">
+        <Button size="sm" onClick={cargarVentaDemo} className="gap-2">
           <Zap className="h-3.5 w-3.5" />
           Simular ventas del turno
         </Button>
