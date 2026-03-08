@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, CheckCircle2, Database, Layout, Layers, Target, TrendingUp, Zap } from "lucide-react";
+import { ArrowRight, CheckCircle2, Database, Layout, Layers, Target, TrendingUp, Zap, ListChecks, Ban, Plug } from "lucide-react";
 
 const Section = ({ title, children, accent }: { title: string; children: React.ReactNode; accent?: boolean }) => (
   <section className={`py-12 ${accent ? "bg-muted/30 -mx-6 lg:-mx-8 px-6 lg:px-8" : ""}`}>
@@ -22,6 +22,7 @@ const flowSteps = [
 const modulos = [
   { name: "Dashboard", desc: "Vista ejecutiva de la operación diaria" },
   { name: "Venta / Caja", desc: "Registro rápido con impacto automático en stock" },
+  { name: "Recetas y Costeo", desc: "Composición, consumo automático y margen bruto" },
   { name: "Stock y Alertas", desc: "Inventario en tiempo real con alertas de mínimos" },
   { name: "Compras", desc: "Órdenes de compra sugeridas y recepción de mercadería" },
   { name: "Facturas", desc: "Cuentas a pagar asociadas a compras" },
@@ -51,6 +52,42 @@ const mvpOut = [
   "Delivery avanzado",
   "Facturación fiscal (AFIP)",
   "Multi-sucursal complejo",
+];
+
+const alcanceIncluido = [
+  "Venta / caja",
+  "Consumo automático por receta",
+  "Stock y alertas",
+  "Orden de compra sugerida",
+  "Recepción de mercadería",
+  "Factura pendiente",
+  "Recetas con datos dummy",
+];
+
+const alcanceNoIncluido = [
+  "Producción",
+  "Múltiples sucursales",
+  "Gestión avanzada de proveedores",
+  "Cuentas corrientes completas",
+  "Tesorería / caja financiera",
+  "Reportes avanzados",
+  "Roles y permisos",
+  "Usuarios y auditoría",
+  "CRM / fidelización",
+  "Delivery / integración con canales de venta",
+  "RRHH / turnos / personal",
+  "Contabilidad",
+  "Gestión fiscal avanzada",
+];
+
+const integracionesPrevistas = [
+  "Importación inicial desde Excel o CSV para productos, ingredientes y recetas",
+  "Integración con sistema contable",
+  "Integración con facturación electrónica",
+  "Integración con POS o caja",
+  "Integración con e-commerce o delivery",
+  "Integración con WhatsApp para pedidos o seguimiento",
+  "Integración con dashboards o BI",
 ];
 
 export default function PresentacionPage() {
@@ -195,7 +232,67 @@ export default function PresentacionPage() {
         </div>
       </Section>
 
-      <Section title="Próximos pasos" accent>
+      {/* Alcance de esta demo */}
+      <Section title="Alcance de esta demo" accent>
+        <p className="text-sm text-muted-foreground mb-6 max-w-3xl">
+          Esta demo muestra el circuito operativo principal con datos de ejemplo. 
+          A continuación se detalla qué está incluido, qué queda fuera de esta etapa y qué integraciones se prevén a futuro.
+        </p>
+        <div className="grid gap-6 md:grid-cols-3">
+          {/* A. Incluido */}
+          <Card>
+            <CardContent className="p-5">
+              <p className="text-sm font-semibold text-success mb-3 flex items-center gap-2">
+                <ListChecks className="h-4 w-4" /> Qué incluye esta demo
+              </p>
+              <ul className="space-y-2">
+                {alcanceIncluido.map((item) => (
+                  <li key={item} className="text-sm flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-success shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+
+          {/* B. No incluido */}
+          <Card>
+            <CardContent className="p-5">
+              <p className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
+                <Ban className="h-4 w-4" /> Qué no está incluido todavía
+              </p>
+              <ul className="space-y-2">
+                {alcanceNoIncluido.map((item) => (
+                  <li key={item} className="text-sm flex items-center gap-2 text-muted-foreground">
+                    <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+
+          {/* C. Integraciones */}
+          <Card>
+            <CardContent className="p-5">
+              <p className="text-sm font-semibold text-accent mb-3 flex items-center gap-2">
+                <Plug className="h-4 w-4" /> Integraciones previstas
+              </p>
+              <ul className="space-y-2">
+                {integracionesPrevistas.map((item) => (
+                  <li key={item} className="text-sm flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-accent/50 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
+      </Section>
+
+      <Section title="Próximos pasos">
         <div className="grid gap-3 md:grid-cols-2">
           {[
             "Validar la propuesta con el Cliente",

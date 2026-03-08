@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { DollarSign, ShoppingCart, AlertTriangle, Truck, FileText, TrendingUp, Play, ArrowRight } from "lucide-react";
 
 export default function DashboardPage() {
-  const { ventas, ingredientes, alertas, ordenesCompra, facturas } = useDemoContext();
+  const { ventas, ingredientes, alertas, ordenesCompra, facturas, resetDemo } = useDemoContext();
   const { startGuide } = useDemoGuide();
 
   const ventasHoy = ventas.reduce((s, v) => s + v.total, 0);
@@ -45,6 +45,11 @@ export default function DashboardPage() {
     ? narrativeParts.join(". ").replace(/\. (\w)/, (_, c) => `. ${c.toUpperCase()}`) + "."
     : "Sin actividad registrada aún. Iniciá la demo guiada para simular la operación del día.";
 
+  const handleStartGuide = () => {
+    resetDemo();
+    startGuide();
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -71,7 +76,7 @@ export default function DashboardPage() {
                 Recorré el flujo operativo principal en 4 pasos. Vas a ver cómo una venta impacta el stock, dispara una alerta y genera automáticamente una orden de compra con su factura.
               </p>
             </div>
-            <Button size="lg" className="gap-2 shrink-0" onClick={startGuide}>
+            <Button size="lg" className="gap-2 shrink-0" onClick={handleStartGuide}>
               <Play className="h-4 w-4" />
               Iniciar demo guiada
             </Button>
