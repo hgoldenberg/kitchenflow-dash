@@ -9,6 +9,7 @@ interface DemoGuideContextType {
   startGuide: () => void;
   nextStep: () => void;
   stopGuide: () => void;
+  resetGuide: () => void;
 }
 
 const DemoGuideContext = createContext<DemoGuideContextType | null>(null);
@@ -59,8 +60,13 @@ export function DemoGuideProvider({ children }: { children: ReactNode }) {
     setCurrentStep(1);
   }, []);
 
+  const resetGuide = useCallback(() => {
+    setIsGuided(false);
+    setCurrentStep(1);
+  }, []);
+
   return (
-    <DemoGuideContext.Provider value={{ isGuided, currentStep, startGuide, nextStep, stopGuide }}>
+    <DemoGuideContext.Provider value={{ isGuided, currentStep, startGuide, nextStep, stopGuide, resetGuide }}>
       {children}
     </DemoGuideContext.Provider>
   );
