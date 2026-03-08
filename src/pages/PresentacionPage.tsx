@@ -35,24 +35,6 @@ const roadmap = [
   { etapa: "Expansión", desc: "Multi-sucursal, delivery, integraciones fiscales", estado: "futuro" },
 ];
 
-const mvpIn = [
-  "Dashboard operativo",
-  "Registro de ventas",
-  "Recetas y consumo automático",
-  "Control de stock con alertas",
-  "Órdenes de compra",
-  "Recepción de mercadería",
-  "Facturas pendientes",
-];
-
-const mvpOut = [
-  "Contabilidad completa",
-  "RRHH y nómina",
-  "CRM / fidelización",
-  "Delivery avanzado",
-  "Facturación fiscal (AFIP)",
-  "Multi-sucursal complejo",
-];
 
 const alcanceIncluido = [
   "Venta / caja",
