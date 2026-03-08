@@ -8,6 +8,7 @@ import { DemoGuideProvider } from "@/context/DemoGuideContext";
 import AppLayout from "@/components/AppLayout";
 import DashboardPage from "@/pages/DashboardPage";
 import VentasPage from "@/pages/VentasPage";
+import RecetasPage from "@/pages/RecetasPage";
 import StockPage from "@/pages/StockPage";
 import ComprasPage from "@/pages/ComprasPage";
 import FacturasPage from "@/pages/FacturasPage";
@@ -28,6 +29,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<DashboardPage />} />
                 <Route path="/ventas" element={<VentasPage />} />
+                <Route path="/recetas" element={<RecetasPage />} />
                 <Route path="/stock" element={<StockPage />} />
                 <Route path="/compras" element={<ComprasPage />} />
                 <Route path="/facturas" element={<FacturasPage />} />

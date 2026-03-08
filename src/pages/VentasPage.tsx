@@ -172,6 +172,7 @@ export default function VentasPage() {
             <Card className="border-accent/30">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm">Consumo automático por receta</CardTitle>
+                <p className="text-[10px] text-muted-foreground">Impacto calculado según recetas activas</p>
               </CardHeader>
               <CardContent className="space-y-1.5">
                 {consumoPreview.map((c) => (

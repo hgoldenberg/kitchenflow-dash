@@ -1,12 +1,14 @@
 import type { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, ShoppingCart, Package, Truck, FileText, RotateCcw, Presentation } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Package, Truck, FileText, RotateCcw, Presentation, ChefHat } from "lucide-react";
 import { useDemoContext } from "@/context/DemoContext";
+import { useDemoGuide } from "@/context/DemoGuideContext";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/ventas", label: "Venta / Caja", icon: ShoppingCart },
+  { to: "/recetas", label: "Recetas y Costeo", icon: ChefHat },
   { to: "/stock", label: "Stock y Alertas", icon: Package },
   { to: "/compras", label: "Compras", icon: Truck },
   { to: "/facturas", label: "Facturas", icon: FileText },
@@ -15,6 +17,7 @@ const navItems = [
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const { resetDemo, alertas } = useDemoContext();
+  const { resetGuide } = useDemoGuide();
 
   return (
     <div className="flex min-h-screen w-full">
@@ -55,7 +58,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             variant="outline"
             size="sm"
             className="w-full gap-2 text-sidebar-foreground/70 border-sidebar-border hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-            onClick={resetDemo}
+            onClick={() => {
+              resetDemo();
+              resetGuide();
+            }}
           >
             <RotateCcw className="h-3.5 w-3.5" />
             Reiniciar demo
