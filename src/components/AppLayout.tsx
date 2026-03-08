@@ -1,5 +1,5 @@
-import type { ReactNode } from "react"; // rebuild
-import { NavLink } from "react-router-dom";
+import type { ReactNode } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { LayoutDashboard, ShoppingCart, Package, Truck, FileText, RotateCcw, Presentation, ChefHat } from "lucide-react";
 import { useDemoContext } from "@/context/DemoContext";
 import { useDemoGuide } from "@/context/DemoGuideContext";
@@ -18,6 +18,7 @@ const navItems = [
 export default function AppLayout({ children }: { children: ReactNode }) {
   const { resetDemo, alertas } = useDemoContext();
   const { resetGuide } = useDemoGuide();
+  const navigate = useNavigate();
 
   return (
     <div className="flex min-h-screen w-full">
@@ -55,12 +56,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </nav>
         <div className="p-3 border-t border-sidebar-border">
           <Button
-            variant="outline"
+            variant="default"
             size="sm"
-            className="w-full gap-2 text-sidebar-foreground/70 border-sidebar-border hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            className="w-full gap-2"
             onClick={() => {
               resetDemo();
               resetGuide();
+              navigate("/");
             }}
           >
             <RotateCcw className="h-3.5 w-3.5" />

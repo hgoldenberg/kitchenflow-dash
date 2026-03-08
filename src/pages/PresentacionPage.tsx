@@ -35,24 +35,6 @@ const roadmap = [
   { etapa: "Expansión", desc: "Multi-sucursal, delivery, integraciones fiscales", estado: "futuro" },
 ];
 
-const mvpIn = [
-  "Dashboard operativo",
-  "Registro de ventas",
-  "Recetas y consumo automático",
-  "Control de stock con alertas",
-  "Órdenes de compra",
-  "Recepción de mercadería",
-  "Facturas pendientes",
-];
-
-const mvpOut = [
-  "Contabilidad completa",
-  "RRHH y nómina",
-  "CRM / fidelización",
-  "Delivery avanzado",
-  "Facturación fiscal (AFIP)",
-  "Multi-sucursal complejo",
-];
 
 const alcanceIncluido = [
   "Venta / caja",
@@ -181,35 +163,6 @@ export default function PresentacionPage() {
               <p className="text-xs text-muted-foreground mt-1">Empezar con datos demo, migrar a operación real sin reescribir</p>
             </CardContent>
           </Card>
-        </div>
-      </Section>
-
-      <Section title="Alcance del MVP" accent>
-        <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <p className="text-sm font-semibold text-success mb-3 flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4" /> Incluido en MVP
-            </p>
-            <ul className="space-y-2">
-              {mvpIn.map((item) => (
-                <li key={item} className="text-sm flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-success shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-muted-foreground mb-3">Fuera del MVP</p>
-            <ul className="space-y-2">
-              {mvpOut.map((item) => (
-                <li key={item} className="text-sm flex items-center gap-2 text-muted-foreground">
-                  <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30 shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
       </Section>
 
