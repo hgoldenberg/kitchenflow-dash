@@ -16,6 +16,7 @@ import PresentacionPage from "@/pages/PresentacionPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+const routerBasename = window.location.pathname.startsWith("/kitchenflow-dash") ? "/kitchenflow-dash" : "/";
 
 // App root – v2
 const App = () => (
@@ -23,7 +24,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter basename={import.meta.env.DEV ? "/" : "/kitchenflow-dash"}>
+      <BrowserRouter basename={routerBasename}>
         <DemoProvider>
           <DemoGuideProvider>
             <AppLayout>
