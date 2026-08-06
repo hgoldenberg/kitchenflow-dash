@@ -109,8 +109,8 @@ export const productos: Producto[] = [
 ];
 
 export const proveedores: Proveedor[] = [
-  { id: "prov1", nombre: "Lácteos del Centro", telefono: "011-4555-8800", email: "ventas@lacteosdelcentro.com" },
-  { id: "prov2", nombre: "Distribuidora Don Pedro", telefono: "011-4777-3200", email: "pedidos@donpedro.com" },
+  { id: "prov1", nombre: "Proveedor Demo A", telefono: "000-0000-0001", email: "contacto@proveedor-demo-a.ficticio" },
+  { id: "prov2", nombre: "Proveedor Demo B", telefono: "000-0000-0002", email: "contacto@proveedor-demo-b.ficticio" },
 ];
 
 export const ventasIniciales: Venta[] = [
