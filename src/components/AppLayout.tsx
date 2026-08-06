@@ -28,7 +28,12 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           <h1 className="font-display text-lg font-bold text-sidebar-primary-foreground tracking-tight">
             🍕 <span className="text-gradient">GastroERP</span>
           </h1>
-          <p className="text-xs text-sidebar-foreground/60 mt-0.5">Demo operativa</p>
+          <div className="mt-1 flex items-center gap-2 flex-wrap">
+            <p className="text-xs text-sidebar-foreground/60">Demo operativa</p>
+            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded border border-sidebar-border text-sidebar-foreground/70">
+              Datos 100% ficticios
+            </span>
+          </div>
         </div>
         <nav className="flex-1 p-3 space-y-1">
           {navItems.map((item) => (
